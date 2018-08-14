@@ -1,0 +1,116 @@
+<apex:page controller="ProductListController">
+    <style>
+        
+    </style>
+    <apex:form >
+        <apex:actionFunction name="resAmount"
+                             action="{!res}"
+                             reRender="TotalAmount, Error">
+            <apex:param name="Amount" value="" />
+            <apex:param name="Unit" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    <script>
+    function resultAmount(Amount, Unit){
+        
+        resAmount(Amount, Unit);
+    }
+    </script>
+    <apex:slds />
+    <apex:form >
+        
+        <apex:repeat value="{!Cpu}" var="product">
+            <apex:pageBlock >
+                <apex:pageMessages id="Error"/>
+                <apex:pageBlockSection columns="2">
+                    <apex:pageBlockSection columns="1"> 
+                        <apex:pageBlockSectionItem dataStyle="text-align:center; font-size: 20px;">
+                            Contact Information
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSection columns="2" >
+                            <apex:pageBlockSectionItem dataStyle="text-align: right; font-size: 15px;">
+                                <apex:outputText >
+                                    <strong>Email:</strong>
+                                </apex:outputText>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:inputText value="{!contactBuyer.Email}"  required="true"> </apex:inputText>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="2" >
+                            <apex:pageBlockSectionItem dataStyle="text-align: right; font-size: 15px;">
+                                <apex:outputText >
+                                    <strong>First Name:</strong>
+                                </apex:outputText>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:inputText value="{!contactBuyer.FirstName}"  required="true"> </apex:inputText>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="2" >
+                            <apex:pageBlockSectionItem dataStyle="text-align: right; font-size: 15px;">
+                                <apex:outputText >
+                                    <strong>Last Name:</strong>
+                                </apex:outputText>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:inputText value="{!contactBuyer.LastName}"  required="true" > </apex:inputText>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1">
+                        <apex:pageBlockSectionItem dataStyle="text-align:center; font-size: 20px;">
+                            Product Information
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSection columns="2" >
+                            <apex:pageBlockSectionItem dataStyle="text-align: right; font-size: 15px;">
+                                <apex:outputText >
+                                    <strong>Product Name:</strong>
+                                </apex:outputText>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputText value="{!product.name}"></apex:outputText>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="2" >
+                            <apex:pageBlockSectionItem dataStyle="text-align: right; font-size: 15px;">
+                                <apex:outputText >
+                                    <strong> Cost:</strong>
+                                </apex:outputText>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputText value="{!product.Unit_Price__c}"> $</apex:outputText>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="2" >
+                            <apex:pageBlockSectionItem dataStyle="text-align: right; font-size: 15px;">
+                                <apex:outputText >
+                                    <strong>Unit Count:</strong>
+                                </apex:outputText>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:inputText onchange="resultAmount({!product.Unit_Price__c}, this.value)" required="true"> </apex:inputText>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="2" >
+                            <apex:pageBlockSectionItem dataStyle="text-align: right; font-size: 15px;">
+                                <apex:outputText >
+                                    <strong>Total Amount:</strong>
+                                </apex:outputText>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputText id="TotalAmount" value="{!TotalAmount} $"></apex:outputText>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                        
+                    </apex:pageBlockSection>
+                </apex:pageBlockSection>
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton styleClass="slds-button slds-button_neutral" value="To Sopping" action="{!redirect1}"/>
+                    <apex:commandButton value="Buy" action="{!buyProduct}" styleClass="slds-button slds-button_brand" />
+                </apex:pageBlockButtons>
+                
+            </apex:pageBlock>
+        </apex:repeat>
+    </apex:form>
+</apex:page>

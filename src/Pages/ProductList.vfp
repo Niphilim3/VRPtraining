@@ -1,0 +1,39 @@
+<apex:page controller="ProductListController"> 
+    <apex:slds />
+    <apex:form >
+        
+        <apex:pageBlock title="Product List">
+            <apex:pageBlockTable value="{!MyProduct}" var="product">
+                <apex:column styleClass="slds-p-around_medium" headerValue="IMAGE" title="{!product.Image_Url__c}" width="15%">
+                    <apex:image url="{!product.Image_Url__c}" width="150px" /> 
+                </apex:column>
+                <apex:column styleClass="slds-p-around_medium" width="15%">
+                    <apex:commandLink action="{!redirect}" target="_blank">
+                        <apex:param name="IdCpu" value="{!product.Id}" assignTo="{!IdCpu}" />
+                        {!product.name}
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column id="ProductDescription" styleClass="slds-p-around_medium" headerValue="DESCRIPTION" width="50%">
+                    {!product.Product_Description__c}
+                    <apex:outputLink rendered="{!RIGHT(product.Product_Description__c,3) = '...'}">
+                        <apex:commandLink action="{!redirect}" target="_blank">
+                            <apex:param name="IdCpu" value="{!product.Id}" assignTo="{!IdCpu}" />
+                            More
+                        </apex:commandLink>
+                    </apex:outputLink>
+                </apex:column>
+                <apex:column styleClass="slds-p-around_medium" headerValue="COST" width="10%">
+                    {!product.Unit_Price__c} $ 
+                </apex:column>
+                <apex:column styleClass="slds-p-around_medium" width="10%"> 
+                    <apex:commandLink action="{!Buy}" target="_blank">
+                        <apex:param name="IdCpu" value="{!product.Id}" assignTo="{!IdCpu}" />
+                        <apex:commandButton styleClass="slds-button slds-button_brand" value="Buy"/>
+                    </apex:commandLink>
+                    
+                </apex:column>
+            </apex:pageBlockTable>
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

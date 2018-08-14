@@ -1,0 +1,64 @@
+<apex:page controller="ProductListController">
+    <style>
+        .Header{
+        text-align: center;
+        font-size: 25px;
+        padding-top: 1%;
+        padding-bottom: 1%;
+        }
+        .image{
+        background-color: white;
+        width: 50%;
+        }
+        .pbBody .pbSubsection{
+        background-color: #ffffff;
+        }
+        .apexp .bPageBlock.apexDefaultPageBlock .pbBody {
+        margin: 0px; 
+        }
+        body .bEditBlock .pbBottomButtons, body .apexp .bPageBlock.apexDefaultPageBlock .pbBottomButtons {
+        margin-top: 0px;
+        }
+        .bPageBlock .dataCol{
+        text-align: center;
+        }
+        .bPageBlock .pbTitle{
+        width: 42%;
+        }
+        .H2{
+        font-size: 20px;
+        }
+        .H3{
+        font-size: 15px;
+        }
+    </style>
+    <apex:slds />
+    <apex:form >
+        <apex:repeat value="{!Cpu}" var="product">
+            <apex:pageBlock > 
+                <apex:facet name="header"><div class = "Header">
+                    {!product.name}
+                    </div> </apex:facet>
+                <apex:pageBlockSection columns="2" >
+                    <apex:pageBlockSectionItem labelStyleClass="imageblock" >
+                        <apex:image url="{!product.Image_Url__c}" styleClass="image"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSection columns="1">
+                        <apex:pageBlockSectionItem >
+                            <strong class="H2">Amount:</strong><br/>
+                            <span class="H3">{!product.Units_Available__c}</span>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <strong class="H2">Description:</strong><br/>
+                            <span class="H3">{!product.Product_Description__c}</span>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>  
+                </apex:pageBlockSection> 
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton styleClass="slds-button slds-button_neutral" value="To Sopping" action="{!redirect1}"/>
+                    <apex:commandButton styleClass="slds-button slds-button_brand" value="Buy" action="{!Buy}"/>
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </apex:repeat>
+    </apex:form>
+</apex:page>
