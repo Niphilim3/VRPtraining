@@ -89,7 +89,7 @@
                                 </apex:outputText>
                             </apex:pageBlockSectionItem>
                             <apex:pageBlockSectionItem >
-                                <apex:inputText onchange="resultAmount({!product.Unit_Price__c}, this.value)" required="true"> </apex:inputText>
+                                <apex:inputText onkeyup="resultAmount({!product.Unit_Price__c}, this.value)" required="true" onfocus="resultAmount({!product.Unit_Price__c}, this.value)" > </apex:inputText>
                             </apex:pageBlockSectionItem>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2" >
@@ -107,7 +107,9 @@
                 </apex:pageBlockSection>
                 <apex:pageBlockButtons location="bottom">
                     <apex:commandButton styleClass="slds-button slds-button_neutral" value="To Sopping" action="{!redirect1}"/>
-                    <apex:commandButton value="Buy" action="{!buyProduct}" styleClass="slds-button slds-button_brand" />
+                    <apex:commandButton value="Buy" action="{!buyProduct}" styleClass="slds-button slds-button_brand" > 
+                        <apex:param name="IdCpu" value="{!product.Id}" assignTo="{!IdCpu}" />
+                    </apex:commandButton>
                 </apex:pageBlockButtons>
                 
             </apex:pageBlock>
