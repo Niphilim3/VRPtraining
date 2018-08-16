@@ -12,10 +12,11 @@ public class ProductListController {
     public List<Product_Table__c> MyProduct1 {get; set;}
     public Id idCpu {get;set;}
     public Order_Table__c Orders  = new Order_Table__c();
+    public Boolean res = true;
     
     //Filling in page "Product List"
     public ProductListController(){
-        MyProduct = [SELECT Id, Name, Image_Url__c, Product_Description__c, 	Unit_Price__c  FROM Product_Table__c]; 
+        MyProduct = [SELECT Id, Name, Image_Url__c, Product_Description__c, Unit_Price__c  FROM Product_Table__c]; 
         for(Product_Table__c item : MyProduct){
             if(item.Product_Description__c.length() > 100){
                 item.Product_Description__c = item.Product_Description__c.abbreviate(100); 
@@ -67,27 +68,54 @@ public class ProductListController {
         return Page.ProductInfo;
     }
     
+    public Boolean validateEmail(String email) {
+        res = true;
+        String emailRegex = '^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$';
+        Pattern MyPattern = Pattern.compile(emailRegex);
+        Matcher MyMatcher = MyPattern.matcher(email);
+        System.debug(!MyMatcher.matches());
+        
+        if (!MyMatcher.matches())
+            res = false;
+        
+        return res;    
+    }
+    
+    public Boolean validateFLName(String firstName, String lastName) {
+        String nameRegex = '^[a-zA-Z0-9А-Яа-я.-]+';
+        If(Pattern.matches(nameRegex, firstName) == false){
+            return res = false;
+        }
+         If(Pattern.matches(nameRegex, lastName) == false){
+            return res = false;
+        }
+        return res;   
+    }
+    
+    
     // Adding an Order to the object
     public void addOrder(){
         Orders.Product__c = idCpu;
-        try{
-            Orders.Units__c = Integer.valueOf(Unit);
-            Orders.Order_Amount__c = TotalAmount;
-            If(resultCpu.Units_Available__c - Orders.Units__c < 0 ){
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Not enough goods'));
+        if(Integer.valueOf(Unit)>0){
+            try{
+                Orders.Units__c = Integer.valueOf(Unit);
+                Orders.Order_Amount__c = TotalAmount;
+                If(resultCpu.Units_Available__c - Orders.Units__c < 0 ){
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Not enough goods'));
+                }
+                else {
+                    resultCpu.Units_Available__c -= Orders.Units__c;
+                    update resultCpu;
+                    insert Orders;
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Order is accepted'));
+                }
             }
-            else {
-                resultCpu.Units_Available__c -= Orders.Units__c;
-                update resultCpu;
-                insert Orders;
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Order is accepted'));
-            }
-        }
-        catch(Exception e)
-        {
-            TotalAmount = null;
-            ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.ERROR,'Please, enter correct Unit Count'));
-        } 
+            catch(Exception e)
+            {
+                TotalAmount = null;
+                ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.ERROR,'Please, enter correct Unit Count'));
+            } }
+        else ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.ERROR,'Please, enter correct Unit Count'));
         
     }
     
@@ -100,7 +128,7 @@ public class ProductListController {
                 Orders.Contact__c = cont.Id;
             }
             update contactBuyer;
-        } else insert contactBuyer;
+        } else insert contactBuyer; 
     }
     
     public Contact getContactBuyer() {
@@ -109,10 +137,30 @@ public class ProductListController {
     
     //Take values of PageBuy
     public void buyProduct() {
+        Orders  = new Order_Table__c();
         email = contactBuyer.Email;
         String firstName = contactBuyer.FirstName;
         String lastName = contactBuyer.LastName;
-        SearchContact();
-        addOrder();
+        validateEmail(email);
+        System.debug(res);
+        System.debug(email);
+        System.debug(contactBuyer.FirstName);
+        System.debug(contactBuyer.LastName);
+        if(res == true){
+            validateFLName(firstName, lastName);
+            if(res == true){
+                SearchContact();
+                addOrder();
+                contactBuyer = new Contact();
+            }
+            else {
+                ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.ERROR,'Please, enter correct Personal Information1'));
+                contactBuyer = new Contact();
+            }
+        }
+        else {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.ERROR,'Please, enter correct Personal Information'));
+            contactBuyer = new Contact();
+        }
     }
 }
